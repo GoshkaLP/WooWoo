@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+
+  woowoo_tbo:
+    image: postgres
+    container_name: db_woowoo
+    restart: unless-stopped
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5435:5432"
+    networks:
+      - woowoo
+
+networks:
+  woowoo:
