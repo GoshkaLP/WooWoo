@@ -1,5 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, BaseConfig
+
+from pydantic.fields import ModelField
+from pydantic.typing import is_union, get_args, get_origin
+
 from datetime import datetime
+
+from typing import Optional
 
 
 class TokenData(BaseModel):
@@ -27,11 +33,11 @@ class Users(BaseDB):
 
 
 class Cities(BaseDB):
-    title: str
+    city_title: str
 
 
 class Interests(BaseDB):
-    title: str
+    interest_title: str
 
 
 class UsersForm(BaseDB):
@@ -51,3 +57,19 @@ class UsersInterests(BaseDB):
 class UsersPhotos(BaseDB):
     user_id: int
     photo_url: str
+
+
+class UsersLikes(BaseDB):
+    from_user_id: int
+    to_user_id: int
+
+
+class Matches(BaseDB):
+    first_user_id: int
+    second_user_id: int
+
+
+class UsersLikesMatches(BaseModel):
+    like: UsersLikes
+    match: Optional[Matches]
+

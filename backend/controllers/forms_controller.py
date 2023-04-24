@@ -3,8 +3,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from datetime import datetime
 
-from fastapi import UploadFile
-
 from models import Cities, Interests, UsersInterests, UsersForm, UsersPhotos
 
 from controllers.errors_controller import city_not_create_exception, interest_not_create_exception, \

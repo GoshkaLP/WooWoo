@@ -208,6 +208,9 @@ class UsersLikes(Base):
     created_at = Column(DateTime, default=datetime.now())
     deleted = Column(Boolean, default=False)
 
+    from_user = relationship('Users', foreign_keys='UsersLikes.from_user_id')
+    to_user = relationship('Users', foreign_keys='UsersLikes.to_user_id')
+
     # user = relationship('Users', backref='user_likes')
 
 # CREATE TABLE "Matches" (
@@ -227,6 +230,8 @@ class Matches(Base):
     created_at = Column(DateTime, default=datetime.now())
     deleted = Column(Boolean, default=False)
 
+    first_user = relationship('Users', foreign_keys='Matches.first_user_id', backref='matches_received')
+    second_user = relationship('Users', foreign_keys='Matches.second_user_id', backref='matches_initiated')
     # user = relationship('Users', backref='match')
 
 

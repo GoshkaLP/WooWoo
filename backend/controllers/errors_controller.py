@@ -85,3 +85,13 @@ no_photo_exception = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail='No photo'
 )
+
+like_not_create_exception = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='Could not create like'
+)
+
+match_not_create_exception = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail='Could not create match'
+)

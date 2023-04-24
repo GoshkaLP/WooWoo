@@ -45,5 +45,5 @@ def api_register(db: Annotated[Session, Depends(get_db)],
 
 
 @users.get('/me', response_model=TokenData)
-def api_me(current_user: Annotated[Users, Depends(get_current_user)]):
+def api_me(current_user: Annotated[TokenData, Depends(get_current_user)]):
     return current_user
