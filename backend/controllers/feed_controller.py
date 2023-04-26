@@ -10,6 +10,13 @@ from controllers.errors_controller import like_not_create_exception, match_not_c
 
 
 def like_user(db: Session, from_user_id: int, to_user_id: int):
+    """
+    Метод для установки лайка другому пользователю, который попался в ленте.
+    :param db: Сессия БД.
+    :param from_user_id: Id пользователя, который ставит лайк (текущий пользователь).
+    :param to_user_id: Id пользователя, которому ставится лайк.
+    :return: Ошибка создания или результат типа UsersLikes.
+    """
     if db.query(UsersLikes).filter_by(from_user_id=from_user_id, to_user_id=to_user_id).first():
         raise like_not_create_exception
     try:
@@ -42,12 +49,24 @@ def like_user(db: Session, from_user_id: int, to_user_id: int):
 
 
 def get_user_matches(db: Session, user_id: int):
+    """
+    Метод получения списка мэтчей пользователя.
+    :param db: Сессия БД.
+    :param user_id: Id текущего пользователя.
+    :return: Массив с записями типа Matches.
+    """
     user_match_first = db.query(Matches).filter_by(first_user_id=user_id).all()
     user_match_second = db.query(Matches).filter_by(second_user_id=user_id).all()
     return user_match_first + user_match_second
 
 
 def get_user_feed(db: Session, user_id: int):
+    """
+    Метод получения ленты пользователя.
+    :param db: Сессия БД.
+    :param user_id: Id текущего пользователя.
+    :return: Массив с записями типа UsersForm.
+    """
     # Получение текущего пользователя и его города
     current_user = db.query(Users).filter_by(id=user_id).one()
     current_city_id = current_user.user_form[0].city_id

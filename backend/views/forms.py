@@ -11,9 +11,6 @@ from io import BytesIO
 
 from schemas import Cities, Interests, UsersForm, UsersInterests, UsersPhotos, TokenData
 
-# from models import Users
-
-from datetime import datetime
 
 from controllers.security_controller import get_current_user
 
@@ -30,6 +27,13 @@ forms = APIRouter(
 def api_create_city(db: Annotated[Session, Depends(get_db)],
                     city_title: Annotated[str, Form()],
                     current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для добавления города.
+    :param db: Сессия БД.
+    :param city_title: Наименование города.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return create_city(db, city_title)
     except HTTPException as e:
@@ -39,6 +43,12 @@ def api_create_city(db: Annotated[Session, Depends(get_db)],
 @forms.get('/cities', response_model=list[Cities])
 def api_get_cities(db: Annotated[Session, Depends(get_db)],
                    current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для получения списка городов.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return get_cities(db)
     except HTTPException as e:
@@ -49,6 +59,13 @@ def api_get_cities(db: Annotated[Session, Depends(get_db)],
 def api_create_interest(db: Annotated[Session, Depends(get_db)],
                         interest_title: Annotated[str, Form()],
                         current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для создания интереса.
+    :param db: Сессия БД.
+    :param interest_title: Наименование интереса.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return create_interest(db, interest_title)
     except HTTPException as e:
@@ -58,6 +75,12 @@ def api_create_interest(db: Annotated[Session, Depends(get_db)],
 @forms.get('/interests', response_model=list[Interests])
 def api_get_interests(db: Annotated[Session, Depends(get_db)],
                       current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт получения интересов.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     return get_interests(db)
 
 
@@ -65,6 +88,13 @@ def api_get_interests(db: Annotated[Session, Depends(get_db)],
 def api_add_user_interest(db: Annotated[Session, Depends(get_db)],
                           current_user: Annotated[TokenData, Depends(get_current_user)],
                           interests_id: Annotated[list[int], Form()]):
+    """
+    Эндпоинт для добавления интересов пользоватлю.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователь.
+    :param interests_id: Массив с id интересов.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return add_user_interests(db, current_user.user_id, interests_id)
     except HTTPException as e:
@@ -74,6 +104,12 @@ def api_add_user_interest(db: Annotated[Session, Depends(get_db)],
 @forms.get('/user/interests', response_model=list[UsersInterests])
 def api_get_user_interests(db: Annotated[Session, Depends(get_db)],
                            current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для получения интересов пользователя.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     return get_user_interests(db, current_user.user_id)
 
 
@@ -85,6 +121,17 @@ def api_create_form(db: Annotated[Session, Depends(get_db)],
                     sex: Annotated[bool, Form()],
                     city_id: Annotated[int, Form()],
                     current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для добавления анкеты пользователя.
+    :param db: Сессия БД.
+    :param name: Имя пользователя.
+    :param surname: Фамилия пользователя.
+    :param birth_date: Дата рождения пользователя.
+    :param sex: Пол пользователя.
+    :param city_id: Id города пользователя.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return create_form(db, current_user.user_id, name, surname, birth_date, sex, city_id)
     except HTTPException as e:
@@ -92,7 +139,14 @@ def api_create_form(db: Annotated[Session, Depends(get_db)],
 
 
 @forms.get('/user/form', response_model=UsersForm)
-def api_get_form(db: Annotated[Session, Depends(get_db)], current_user: Annotated[TokenData, Depends(get_current_user)]):
+def api_get_form(db: Annotated[Session, Depends(get_db)],
+                 current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для получения анкеты пользователя.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     return get_user_form(db, current_user.user_id)
 
 
@@ -100,6 +154,13 @@ def api_get_form(db: Annotated[Session, Depends(get_db)], current_user: Annotate
 def api_add_photos(db: Annotated[Session, Depends(get_db)],
                    photos: Annotated[list[bytes], File()],
                    current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для добавления фотографий пользователя.
+    :param db: Сессия БД.
+    :param photos: Массив с фотографиями пользователя.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         return add_user_photos(db, current_user.user_id, photos)
     except HTTPException as e:
@@ -109,13 +170,26 @@ def api_add_photos(db: Annotated[Session, Depends(get_db)],
 @forms.get('/user/photo', response_model=list[UsersPhotos])
 def api_get_photos(db: Annotated[Session, Depends(get_db)],
                    current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндпоинт для получения ссылок на фотографии пользователя.
+    :param db: Сессия БД.
+    :param current_user: Текущий пользователя.
+    :return: Результат работы соответствующего метода.
+    """
     return get_user_photos(db, current_user.user_id)
 
 
 @forms.get('/user/photo/{photo_id}')
 def api_photo_url(db: Annotated[Session, Depends(get_db)],
                   photo_id: int,
-                  current_user: Annotated[TokenData, Depends(get_current_user)], ):
+                  current_user: Annotated[TokenData, Depends(get_current_user)]):
+    """
+    Эндопоинт для получения фото по ссылке.
+    :param db: Сессия БД.
+    :param photo_id: Id фотографии.
+    :param current_user: Текущий пользователь.
+    :return: Результат работы соответствующего метода.
+    """
     try:
         photo = get_photo_url(db, current_user.user_id, photo_id)
         photo_stream = BytesIO(photo.photo)

@@ -28,34 +28,63 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 def verify_password(plain_password: str, hashed_password: str):
+    """
+    Метод для проверки пароля.
+    :param plain_password: Пароль без шифрования.
+    :param hashed_password: Зашифрованный пароль.
+    :return: Результат проверки пароля.
+    """
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str):
+    """
+    Метод шифрования пароля.
+    :param password: Пароль без шифрования.
+    :return: Результат шифрования пароля.
+    """
     return pwd_context.hash(password)
 
 
 def get_user(db: Session, email: str):
+    """
+    Метод для получения пользователя из БД по почте.
+    :param db: Сессия БД.
+    :param email: Электронная почта.
+    :return: Результат типа Users.
+    """
     if user := db.query(Users).filter_by(email=email).first():
         return UsersSchema(**user.__dict__)
 
 
 def authenticate_user(db: Session, email: str, password: str):
+    """
+    Метод для аутентификации пользователя.
+    :param db: Сессия БД.
+    :param email: Электронная почта.
+    :param password: Пароль.
+    :return: Ошибку авторизации или пользователя типа Users.
+    """
     user = get_user(db, email)
     if not user:
-        # return False
         raise user_not_found_exception
     if not verify_password(password, user.password):
-        # return False
         raise wrong_password_exception
     return user
 
 
 def register_user(db: Session, email: str, password: str, repeat_password: str):
+    """
+    Метод для регистрации пользователя.
+    :param db: Сессия БД.
+    :param email: Электронная почта.
+    :param password: Пароль.
+    :param repeat_password: Пароль еще раз.
+    :return: Ошибку регистрации или пользователя типа Users.
+    """
     user = get_user(db, email)
     if not user:
         if password != repeat_password:
-            # return False
             raise passwords_match_exception
         new_user = Users(
             email=email,
@@ -73,6 +102,11 @@ def register_user(db: Session, email: str, password: str, repeat_password: str):
 
 
 def create_access_token(data: dict):
+    """
+    Метол для создания токена пользователя.
+    :param data: Данные для добавления в токен.
+    :return: Токен.
+    """
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=365)
     to_encode.update({"exp": expire})
@@ -81,11 +115,11 @@ def create_access_token(data: dict):
 
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    # credentials_exception = HTTPException(
-    #     status_code=status.HTTP_401_UNAUTHORIZED,
-    #     detail="Could not validate credentials",
-    #     headers={"WWW-Authenticate": "Bearer"},
-    # )
+    """
+    Метод для получения текущего пользователя.
+    :param token: Токен пользователя.
+    :return: Ошибку или текущего пользователя.
+    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get('user_id')
