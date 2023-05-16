@@ -18,7 +18,7 @@ from controllers.forms_controller import create_city, get_cities, create_interes
     add_user_interests, get_user_interests, get_user_form, add_user_photos, get_user_photos, get_photo_url
 
 forms = APIRouter(
-    prefix='/forms',
+    prefix='/api/forms',
     tags=['users forms']
 )
 
@@ -101,16 +101,18 @@ def api_add_user_interest(db: Annotated[Session, Depends(get_db)],
         raise e
 
 
-@forms.get('/user/interests', response_model=list[UsersInterests])
+@forms.get('/user/{user_id}/interests', response_model=list[UsersInterests])
 def api_get_user_interests(db: Annotated[Session, Depends(get_db)],
+                           user_id: int,
                            current_user: Annotated[TokenData, Depends(get_current_user)]):
     """
     Эндпоинт для получения интересов пользователя.
     :param db: Сессия БД.
+    :param user_id: Id пользователя.
     :param current_user: Текущий пользователь.
     :return: Результат работы соответствующего метода.
     """
-    return get_user_interests(db, current_user.user_id)
+    return get_user_interests(db, user_id)
 
 
 @forms.post('/user/form', response_model=UsersForm)
@@ -167,16 +169,18 @@ def api_add_photos(db: Annotated[Session, Depends(get_db)],
         raise e
 
 
-@forms.get('/user/photo', response_model=list[UsersPhotos])
+@forms.get('/user/{user_id}/photo', response_model=list[UsersPhotos])
 def api_get_photos(db: Annotated[Session, Depends(get_db)],
+                   user_id: int,
                    current_user: Annotated[TokenData, Depends(get_current_user)]):
     """
     Эндпоинт для получения ссылок на фотографии пользователя.
     :param db: Сессия БД.
+    :param user_id: Id пользователя.
     :param current_user: Текущий пользователя.
     :return: Результат работы соответствующего метода.
     """
-    return get_user_photos(db, current_user.user_id)
+    return get_user_photos(db, user_id)
 
 
 @forms.get('/user/photo/{photo_id}')
@@ -191,7 +195,7 @@ def api_photo_url(db: Annotated[Session, Depends(get_db)],
     :return: Результат работы соответствующего метода.
     """
     try:
-        photo = get_photo_url(db, current_user.user_id, photo_id)
+        photo = get_photo_url(db, photo_id)
         photo_stream = BytesIO(photo.photo)
         return StreamingResponse(content=photo_stream, media_type="image/jpeg")
     except HTTPException as e:

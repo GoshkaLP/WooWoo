@@ -13,7 +13,7 @@ from dependecies import get_db
 from schemas import TokenData, UsersLikesMatches, Matches, UsersForm
 
 feed = APIRouter(
-    prefix='/feed',
+    prefix='/api/feed',
     tags=['user feed']
 )
 

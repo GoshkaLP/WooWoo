@@ -239,7 +239,7 @@ class UsersLikes(Base):
     deleted = Column(Boolean, default=False)
 
     from_user = relationship('Users', foreign_keys='UsersLikes.from_user_id')
-    to_user = relationship('Users', foreign_keys='UsersLikes.to_user_id')
+    to_user = relationship('Users', foreign_keys='UsersLikes.to_user_id', backref='likes_received')
 
     # user = relationship('Users', backref='user_likes')
 

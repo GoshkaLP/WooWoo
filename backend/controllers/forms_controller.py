@@ -188,12 +188,12 @@ def get_user_photos(db: Session, user_id: int):
     user_photos = db.query(UsersPhotos).filter_by(user_id=user_id).all()
     resp = []
     for user_photo in user_photos:
-        resp.append({'photo_url': f'http://localhost:8000/forms/user/photo/{user_photo.id}',
+        resp.append({'photo_url': f'/api/forms/user/photo/{user_photo.id}',
                      **user_photo.__dict__})
     return resp
 
 
-def get_photo_url(db: Session, user_id: int, photo_id: int):
+def get_photo_url(db: Session, photo_id: int):
     """
     Метод для получения фотографии по ссылке.
     :param db: Сессия БД.
@@ -201,7 +201,7 @@ def get_photo_url(db: Session, user_id: int, photo_id: int):
     :param photo_id: Id фотографии.
     :return: Ошибку получения фотографии или фото.
     """
-    photo = db.query(UsersPhotos).filter_by(user_id=user_id, id=photo_id).first()
+    photo = db.query(UsersPhotos).filter_by(id=photo_id).first()
     if not photo:
         raise no_photo_exception
     return photo

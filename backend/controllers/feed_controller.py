@@ -79,6 +79,7 @@ def get_user_feed(db: Session, user_id: int):
             ~Users.matches_received.any(Matches.second_user_id == user_id),
             ~Users.matches_initiated.any(Matches.first_user_id == user_id),
             Users.user_form.any(UsersForm.sex != current_sex),
+            ~Users.likes_received.any(UsersLikes.from_user_id == user_id),
             Users.id != user_id,
             Users.deleted == False
         )

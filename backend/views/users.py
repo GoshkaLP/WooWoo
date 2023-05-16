@@ -13,7 +13,7 @@ from controllers.security_controller import create_access_token, authenticate_us
 
 
 users = APIRouter(
-    prefix='/users',
+    prefix='/api/users',
     tags=['users']
 )
 

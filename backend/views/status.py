@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 
 status = APIRouter(
-    prefix='/server',
+    prefix='/api/server',
     tags=['server']
 )
 
