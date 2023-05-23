@@ -2,6 +2,19 @@ version: "3.8"
 
 services:
 
+  woowoo_app:
+    build: .
+    container_name: backend_woowoo
+    restart: unless-stopped
+    links:
+      - woowoo_tbo
+    env_file:
+      - .env
+    expose:
+      - 8089
+    networks:
+      - woowoo
+
   woowoo_tbo:
     image: postgres
     container_name: db_woowoo
