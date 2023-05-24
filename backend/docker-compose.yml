@@ -15,7 +15,7 @@ services:
     networks:
       - woowoo
 
-  woowoo_tbo:
+  woowoo_db:
     image: postgres
     container_name: db_woowoo
     restart: unless-stopped
